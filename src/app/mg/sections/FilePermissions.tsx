@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAdmin } from "../lib/admin-context";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "https://pan.tantantan.tech/wlm-api";
+const API_BASE = process.env.NEXT_PUBLIC_WLM_API_BASE || process.env.NEXT_PUBLIC_API_BASE || "https://pan.tantantan.tech/wlm-api";
 
 const ACTION_LABELS: Record<string, string> = {
   view: "浏览", download: "下载", preview: "预览", upload: "上传",

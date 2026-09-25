@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useAdmin } from "../lib/admin-context";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "https://pan.tantantan.tech/wlm-api";
+const API_BASE = process.env.NEXT_PUBLIC_WLM_API_BASE || process.env.NEXT_PUBLIC_API_BASE || "https://pan.tantantan.tech/wlm-api";
 
 export default function Emergency() {
   const { adminStats, denyDashboard, adminSettings, adminAction, logAdminAction, fetchAllData, canModify, token, isAdmin } = useAdmin();

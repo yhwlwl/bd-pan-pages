@@ -6,6 +6,7 @@
     "dev": "next dev",
     "postinstall": "mkdir -p public/pdfjs && cp node_modules/pdfjs-dist/build/pdf.min.mjs node_modules/pdfjs-dist/build/pdf.worker.min.mjs public/pdfjs/",
     "build": "next build",
+    "build:pages": "node scripts/build-pages.mjs",
     "start": "next start",
     "test": "npx playwright test",
     "test:ui": "npx playwright test --ui",

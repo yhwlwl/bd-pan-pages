@@ -6,15 +6,16 @@ import { hasAnyMgViewPermission } from '../lib/mg-permissions';
 
 const ALIST_BASE_DEFAULT = (process.env.NEXT_PUBLIC_ALIST_URL || 'https://pan.tantantan.tech:5245').replace(/\/+$/, '');
 const CONFIGURED_API_BASE = (process.env.NEXT_PUBLIC_API_BASE || '').replace(/\/+$/, '');
+const PAGES_API_BASE = (process.env.NEXT_PUBLIC_PAGES_API_BASE || '').replace(/\/+$/, '');
 
 // Keep API calls on the deployment the user is currently visiting.
 // The server-hosted build lives under /pan, while Vercel should use same-origin /api/*.
 // This prevents a stale NEXT_PUBLIC_API_BASE from sending Vercel users to the old server.
 const API_BASE = typeof window === 'undefined'
   ? CONFIGURED_API_BASE
-  : window.location.hostname === 'pan.tantantan.tech' && window.location.pathname.startsWith('/pan')
+  : PAGES_API_BASE || (window.location.hostname === 'pan.tantantan.tech' && window.location.pathname.startsWith('/pan')
     ? '/pan'
-    : '';
+    : '');
 
 type Role = 'admin' | 'manager' | 'guest';
 type Theme = 'light' | 'dark';
@@ -371,7 +372,7 @@ export default function Home() {
           return true;
         }
       } else {
-        previewUrl = `/api/alist-download?path=${encodeURIComponent(filePath)}&preview=1`;
+        previewUrl = `${API_BASE}/api/alist-download?path=${encodeURIComponent(filePath)}&preview=1`;
         if (userToken) previewUrl += `&token=${encodeURIComponent(userToken)}`;
       }
 
@@ -1157,7 +1158,7 @@ export default function Home() {
 
   const alistProxyDownload = (filePath: string, fileName: string, actionType: string = '代理下载') => {
     logUserAction(actionType, filePath);
-    let downloadUrl = `/api/alist-download?path=${encodeURIComponent(filePath)}`;
+    let downloadUrl = `${API_BASE}/api/alist-download?path=${encodeURIComponent(filePath)}`;
     if (userToken) downloadUrl += `&token=${encodeURIComponent(userToken)}`;
     const a = document.createElement('a');
     a.href = downloadUrl;
@@ -1457,7 +1458,7 @@ export default function Home() {
 
         const uploadData: any = await new Promise((resolve, reject) => {
           const xhr = new XMLHttpRequest();
-          xhr.open('PUT', '/api/alist-upload');
+          xhr.open('PUT', `${API_BASE}/api/alist-upload`);
           Object.entries(headers).forEach(([k, v]) => xhr.setRequestHeader(k, v));
           xhr.upload.onprogress = (e) => {
             if (e.lengthComputable) {
@@ -3302,7 +3303,7 @@ export default function Home() {
                     setAlistMsg('⏳ 正在连接阿里云服务器...');
                     console.log(`[下载:ECS] ${alistDownloadModal!.filePath}`);
                     logUserAction('下载 - 阿里云服务器极速下载', alistDownloadModal!.filePath);
-                    let downloadUrl = `/api/alist-download?path=${encodeURIComponent(alistDownloadModal!.filePath)}`;
+                    let downloadUrl = `${API_BASE}/api/alist-download?path=${encodeURIComponent(alistDownloadModal!.filePath)}`;
                     if (userToken) downloadUrl += `&token=${encodeURIComponent(userToken)}`;
                     window.open(downloadUrl, '_blank');
                     setAlistMsg('已启动阿里云服务器通道');
@@ -3426,7 +3427,7 @@ export default function Home() {
                     if (globalDownloadModes?.vercel === 'disabled') return;
                     console.log(`[下载:Vercel] ${alistDownloadModal!.filePath}`);
                     logUserAction('下载 - vercel服务器中转下载', alistDownloadModal!.filePath);
-                    let downloadUrl = `/api/alist-download?path=${encodeURIComponent(alistDownloadModal!.filePath)}`;
+                    let downloadUrl = `${API_BASE}/api/alist-download?path=${encodeURIComponent(alistDownloadModal!.filePath)}`;
                     if (userToken) downloadUrl += `&token=${encodeURIComponent(userToken)}`;
                     window.open(downloadUrl, '_blank');
                     setAlistDownloadModal(null);
